@@ -1,0 +1,41 @@
+{
+  "short_name": "Ecommerce coleta produtos",
+  "name": "Ecommerce coleta produtos",
+  "manifest_version": 3,
+  "permissions": [
+    "activeTab",
+    "debugger",
+    "contextMenus",
+    "webNavigation",
+    "downloads",
+    "storage",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://shopee.com.br/*",
+    "https://www.gstatic.com/firebasejs/*"
+  ],
+  "optional_host_permissions":[
+    "https://*/*",
+    "http://*/*"
+  ],
+  "background": {
+    "service_worker": "sw.js",
+    "type": "module"
+  },
+  "action": {
+    "default_popup": "index.html",
+    "default_title": "Click Me",
+    "default_icon": {
+      "16": "assets/images/favicon.png",
+      "48": "assets/images/favicon.png",
+      "128": "assets/images/favicon.png"
+    }
+  },
+  "icons": {
+    "16": "assets/images/favicon.png",
+    "48": "assets/images/favicon.png",
+    "128": "assets/images/favicon.png"
+  },
+  "version": "0.0.3"
+}
