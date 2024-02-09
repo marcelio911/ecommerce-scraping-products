@@ -1,22 +1,22 @@
 // how to get the current tab url
-const persistAcrossSessions = true;
-const runAt = 'document_end';
+const persistAcrossSessions = false;
+const runAt = 'document_start';
 const allFrames = true;
-const world = 'MAIN';
+const world = 'ISOLATED';
 const DYNAMIC_SCRIPT_ID = 'dynamic-script';
-const matches = ['https://shopee.com.br/*'];
+const matches = ['*://shopee.com.br/*'];
 
 // Get a non-default Storage bucket
 async function isDynamicContentScriptRegistered() {
-  const scripts = await chrome.scripting.getRegisteredContentScripts();
+  const scripts = await chrome?.scripting?.getRegisteredContentScripts();
 
-  return scripts.some((s) => s.id === DYNAMIC_SCRIPT_ID);
+  return scripts?.some((s) => s.id === DYNAMIC_SCRIPT_ID);
 }
 export  const registerDynamic = async () => {
     const isRegistered = await isDynamicContentScriptRegistered();
     if (isRegistered) {
       console.log('Dynamic content script already registered');
-      chrome?.tabs.reload();
+      chrome?.tabs?.reload();
       return;
     }
     await chrome?.scripting?.registerContentScripts([
@@ -31,19 +31,19 @@ export  const registerDynamic = async () => {
       }
     ]);
     console.log('Dynamic content script registered');
-    chrome.tabs.reload();
+
+  chrome?.tabs?.reload();
 
 
 }
 
 chrome?.tabs?.query({active: true, currentWindow: true}, async (tabs) => {
-  const tab = tabs[0];
-
-
+  const tab2 = tabs[0];
   const { options } = await chrome.storage.local.get('options');
 
-  console.log('tabs2', JSON.stringify(tab));
-  console.log('options', JSON.stringify(options));
+  console.log('tabs2', JSON.stringify(tab2));
+  console.log('options2', JSON.stringify(options));
+
 
 
   chrome.runtime.onMessage.addListener(
@@ -52,16 +52,20 @@ chrome?.tabs?.query({active: true, currentWindow: true}, async (tabs) => {
       console.log('sender', sender);
       console.log('sendResponse', sendResponse);
       if (request.type === "url") {
-        chrome.tabs.create({"url": request.url});
+        // chrome.tabs.create({"url": request.url});
+        sendResponse({farewell: "goodbye", sender, request})
       }
     }
   );
+  console.log(' chrome.runtime',  chrome.runtime);
 }
 );
 
 chrome?.webNavigation?.onDOMContentLoaded.addListener(async ({ tabId, url }) => {
-  console.log('url !== matches', !matches.some(u => url.includes(u)), ' == tabId, url ', tabId, url);
-
+  console.log('url !== matches', !matches.some(u => url.includes(u)));
+  console.log('matches', matches);
+  console.log('url', url);
+  console.log('tabId', tabId);
   if (!matches.some(u => url.includes(u))) return;
 
   const { options } = await chrome.storage.local.get('options');
@@ -82,7 +86,7 @@ chrome?.action?.onClicked.addListener((tab) => {
   console.log('onClicked', tab);
 
   if (!tab?.url?.includes('chrome://')) {
-    chrome.scripting.executeScript({
+    chrome?.scripting?.executeScript({
       target: { tabId: Number(tab.id) },
       func: reddenPage
     });
@@ -93,7 +97,7 @@ chrome?.action?.onClicked.addListener((tab) => {
 
 
 export const unRegisterDynamic = async () => {
-    await chrome.scripting.unregisterContentScripts({
+    await chrome?.scripting?.unregisterContentScripts({
       ids: [DYNAMIC_SCRIPT_ID]
     });
 

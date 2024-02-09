@@ -1,26 +1,32 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-document.body.style.backgroundColor = 'green';
+(async () => {
+  const response = await chrome.runtime.sendMessage({greeting: "hello"});
+  // do something with response here, not outside the function
+  console.log(response);
+//   document.body.style.backgroundColor = 'green';
 
+})();
 let product = {};
 
-const eventsToPrepareLoadObjects = async () => {
-  await new Promise((resolve) => setTimeout(resolve, 1500));
+const eventsToPrepareLoadProductsModal = async () => {
+  await new Promise((resolve) => setTimeout(resolve, 2500));
 
   const clickElements = (elements) => {
     elements.forEach((el) => {
       if (el.nodeType === Node.ELEMENT_NODE) {
         try {
           document.getElementsByClassName(el.className)[0].click();
+          // console.log('el', el.className  )
         } catch (error) {
-          console.log('error', error);
+
         }
-        console.log('el', el.className  )
         clickElements(el.childNodes);
       }
     });
   };
+  // how to getElementsByClassName after select section
+  const product = document.getElementsByClassName('product-briefing')[0];
+  const briefing = product.childNodes[2].childNodes[1];
 
-  const briefing = document.getElementsByClassName('product-briefing')[0];
   if (briefing) {
     clickElements(Array.from(briefing.childNodes));
   }
@@ -29,18 +35,22 @@ const eventsToPrepareLoadObjects = async () => {
 
 }
 
-const prepareSendMessageToExtension = async () => {
+const prepareSendMessageToExtension = async (src, ext) => {
+  const newPerms = { permissions: ['topSites'] };
   // Enviar a URL para o listener na extensão
-  const sendMessage = await chrome.runtime.sendMessage({ type: 'url', product });
-  console.log('sendedMessage', sendMessage);
+  await chrome.runtime.sendMessage({greeting: "hello"});
+  const response = await chrome.runtime.sendMessage({ type: 'product', request: { product } });
+  console.log('response::product', response);
+
 }
 
 const getInfoProduct = () => {
 }
 
 const getShopeeImages = async () => {
-  const { product } = require('./models/product.js');
-
+  const {Produto} = await getProducts();
+  product = new Produto();
+  // console.log('Produto:: ', product.addImage);
   const innerModal = document.querySelector('#modal');
   if (!innerModal) {
     return;
@@ -48,27 +58,172 @@ const getShopeeImages = async () => {
   const images = innerModal.querySelectorAll('img');
   for (const image of images) {
     const ext = image.src.split('.').pop();
-    console.log('img ', image.src, + ' filename: '+ image.className + ext);
-    // prepareSendMessageToExtension(image.src, image.className + image.ext);
+    // console.log('img ', image.src, + ' filename: '+ image.className + ext);
     product.addImage(image.src, image.className + ext);
+    const response = await chrome.runtime.sendMessage({ type: 'url', request: { url: image.src } });
+    console.log('response', response);
   }
 }
 
+
 const initializeGetShopeeProductInfoByPage = async () => {
-  await eventsToPrepareLoadObjects();
-  getShopeeImages();
-  getInfoProduct();
+  await eventsToPrepareLoadProductsModal();
+  await getShopeeImages();
+  await getInfoProduct();
   prepareSendMessageToExtension();
+
 }
 
 
 (async () => {
   console.log('Content script running');
-  initializeGetShopeeProductInfoByPage();
-
-  document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM fully loaded and parsed');
-    initializeGetShopeeProductInfoByPage();
-  });
+  await initializeGetShopeeProductInfoByPage();
 
 })();
+
+const getProducts = async () => {
+  class Fornecedor {
+    nome;
+    cnpj;
+    email;
+    telefone;
+    endereco;
+    cidade;
+    estado;
+    cep;
+    data_criacao;
+    data_atualizacao;
+    data_exclusao;
+
+    constructor(
+        nome,
+        cnpj,
+        email,
+        telefone,
+        endereco,
+        cidade,
+        estado,
+        cep,
+        data_criacao,
+        data_atualizacao,
+        data_exclusao
+    ) {
+        this.nome = nome;
+        this.cnpj = cnpj;
+        this.email = email;
+        this.telefone = telefone;
+        this.endereco = endereco;
+        this.cidade = cidade;
+        this.estado = estado;
+        this.cep = cep;
+        this.data_criacao = data_criacao;
+        this.data_atualizacao = data_atualizacao;
+        this.data_exclusao = data_exclusao;
+    }
+}
+
+class ProdutoCategoria {
+    nome;
+    descricao;
+
+    constructor(nome, descricao) {
+        this.nome = nome;
+        this.descricao = descricao;
+    }
+}
+
+class Subcategoria {
+    nome;
+    descricao;
+    categoria;
+
+    constructor(nome, descricao, categoria) {
+        this.nome = nome;
+        this.descricao = descricao;
+        this.categoria = categoria;
+    }
+}
+
+class Tag {
+    nome;
+
+    constructor(nome) {
+        this.nome = nome;
+    }
+
+}
+
+class Produto {
+
+    nome = '';
+    descricao = '';
+    preco = 0;
+    fornecedor = null;
+    nota = 0;
+    url = '';
+    imagesArr = [];
+    categoria = null;
+    subcategoria = null;
+    avaliacoes = 0;
+    totalVendas = 0;
+    tags = [];
+    status = true;
+    data_criacao = new Date();
+    data_atualizacao = new Date();
+    data_exclusao = null;
+
+    constructor() {
+    }
+
+    initialize(
+        nome,
+        descricao,
+        preco,
+        fornecedor ,
+        rating,
+        url,
+        images,
+        categoria,
+        subcategoria,
+        avaliacoes,
+        totalVendas,
+        tags,
+        status,
+        data_criacao,
+        data_atualizacao,
+        data_exclusao
+    ) {
+        this.nome = nome;
+        this.descricao = descricao;
+        this.preco = preco;
+        this.fornecedor = fornecedor;
+        this.nota = rating;
+        this.url = url;
+        this.imagesArr = images;
+        this.categoria = categoria;
+        this.subcategoria = subcategoria;
+        this.tags = tags;
+        this.avaliacoes = avaliacoes;
+        this.totalVendas = totalVendas;
+        this.status = status;
+        this.data_criacao = data_criacao;
+        this.data_atualizacao = data_atualizacao;
+        this.data_exclusao = data_exclusao;
+    }
+
+    addImage(src, filename) {
+        if (!this.imagesArr) {
+            this.imagesArr = [];
+        }
+        const singleImage = {
+            src,
+            filename
+        }
+        this.imagesArr.push(singleImage);
+    }
+  }
+
+  return { Produto, Fornecedor, ProdutoCategoria, Subcategoria, Tag};
+}
+
+

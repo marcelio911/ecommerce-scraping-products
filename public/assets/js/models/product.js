@@ -69,7 +69,7 @@ class Tag {
 
 }
 
-class Produto {
+export class Produto {
 
     nome = '';
     descricao = '';
@@ -138,8 +138,4 @@ class Produto {
         this.imagesArr.push(singleImage);
     }
 }
-
-const product = new Produto();
-Object.freeze(product);
-
-module.exports = { product };
+module.exports = { Produto };

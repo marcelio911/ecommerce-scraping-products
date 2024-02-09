@@ -2,13 +2,16 @@
   "short_name": "Ecommerce coleta produtos",
   "name": "Ecommerce coleta produtos",
   "manifest_version": 3,
+  "devtools_page": "examples/devtools.html",
   "permissions": [
     "activeTab",
+    "tabs",
     "debugger",
     "contextMenus",
     "webNavigation",
     "downloads",
     "storage",
+    "power",
     "scripting"
   ],
   "host_permissions": [
@@ -25,7 +28,7 @@
   },
   "action": {
     "default_popup": "index.html",
-    "default_title": "Click Me",
+    "default_title": "Começar a coletar produtos",
     "default_icon": {
       "16": "assets/images/favicon.png",
       "48": "assets/images/favicon.png",
