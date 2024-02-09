@@ -48,13 +48,16 @@ chrome?.tabs?.query({active: true, currentWindow: true}, async (tabs) => {
 
   chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
-      console.log('request', request);
-      console.log('sender', sender);
-      console.log('sendResponse', sendResponse);
+
       if (request.type === "url") {
-        // chrome.tabs.create({"url": request.url});
-        sendResponse({farewell: "goodbye", sender, request})
+        sendResponse({farewell: "goodbye"})
       }
+      if (request.type === "produto") {
+        console.log('request', request);
+        console.log('sender', sender);
+        sendResponse({farewell: "cadastrado com sucesso"})
+      }
+
     }
   );
   console.log(' chrome.runtime',  chrome.runtime);
