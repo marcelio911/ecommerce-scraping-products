@@ -1,23 +1,7 @@
 import { useToggle } from 'react-use';
-import styled from 'styled-components';
-import { registerDynamic, unRegisterDynamic } from './chrome-extensions';
-import Produto from './produto';
-
-const Wrapper = styled.div`
-  width: 400px;
-  height: 400px;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-  p {
-    font-size: 2rem;
-    margin: 0;
-  }
-  span {
-    font-size: 1rem;
-  }
-`;
+import { registerDynamic, unRegisterDynamic } from '../chrome-extensions';
+import Produto from '../../components/produtos';
+import { Container } from './styles';
 
 function Home() {
 
@@ -34,7 +18,7 @@ function Home() {
   }
 
   return (
-    <Wrapper className="animate__animated animate__fadeIn animate__fast">
+    <Container className="animate__animated animate__fadeIn animate__fast">
       <form>
 
         <Produto />
@@ -52,7 +36,7 @@ function Home() {
 
 
 
-    </Wrapper>
+    </Container>
   );
 }
 

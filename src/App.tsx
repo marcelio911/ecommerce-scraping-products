@@ -1,13 +1,14 @@
 import './App.css'
-import Home from './pages/home';
 
-function App() {
+import MenuNavegacao from './components/menu-navegacao';
+
+const App = () => {
 
   return (
-    <>
-      <Home />
-    </>
-  )
-}
+    <div className="App dark">
+      <MenuNavegacao />
+    </div>
+  );
+};
 
-export default App
+export default App;

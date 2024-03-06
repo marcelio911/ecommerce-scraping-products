@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 
-const Productter = styled.div`
+const Products = styled.div`
   width: 400px;
   height: 400px;
   display: flex;
@@ -24,7 +24,7 @@ function Produto() {
   const [price, setPrice] = useState('');
 
   return (
-    <Productter id="produtos">
+    <Products id="produtos">
 
       <p>Capturar produto</p>
       <label htmlFor="link">Link de afiliado</label>
@@ -37,7 +37,7 @@ function Produto() {
       <br />
       <span>Para capturar o produto, clique no botão abaixo.</span>
 
-    </Productter>
+    </Products>
   );
 }
 
