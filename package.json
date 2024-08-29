@@ -38,7 +38,7 @@
     "eslint-plugin-react-refresh": "^0.4.5",
     "husky": "^7.0.2",
     "lint-staged": "^11.1.2",
-    "plop": "^2.7.4",
+    "plop": "^4.0.1",
     "prettier": "^2.3.2",
     "typescript": "^5.2.2",
     "vite": "^5.0.8",
